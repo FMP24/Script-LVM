@@ -58,6 +58,14 @@ return 1
 fi
 }
 
+function f_buscapaquete{
+paquete=$(sudo dpkg $comando) 
+} 
+
+function f_instalapaquete{
+sudo apt update - y && sudo apt install - y $paquete
+} 
+
 
 #4. Comprobar que discos se van a utilizar para el vg
 #   Buscar discos vacío (4 discos de 5GB) y guardarlos variables d1 d2 d3 d4.
