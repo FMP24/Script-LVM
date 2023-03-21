@@ -8,8 +8,6 @@ cian="\e[36m"
 reset="\e[0m"
 
 ### Funciones ###
-### DURANTE DESARROLLO; HACED FICHEROS APARTE CON VUESTRAS FUNCIONES, NO ESCRIBAIS AQUÍ ###
-### llamad las variables de colores poniendo  ". funciones" en el fichero de vuestra función ###
 
 #1. Comprobar root
 #   si no es root, envía un mensaje de error diciendo que se ejecute como root
@@ -22,10 +20,6 @@ if [[ $USER != "root" ]]; then
    echo "Este script debe ser ejecutado como root" 
    exit 1
 fi
-f_comprobarroot
-# Si eres root, continua el programa aquí
-echo "El script se está ejecutando como root"
-
 
 #2. Internet
 #   comprueba internet
@@ -35,10 +29,9 @@ echo "El script se está ejecutando como root"
 
 function f_conexion {
         if ping -c 1 -q 8.8.8.8 > /dev/null; then
-        echo “Tienes conexión a Internet”
         return 0
         else
-        echo “Comprueba tu conexión”
+        echo "ERROR: Comprueba tu conexión"
         return 1
         fi
 }
@@ -48,16 +41,13 @@ function f_conexion {
 #   Comprobar si no están los paquetes y en ese caso instalarlos.
 #   paquetes: lvm2, mkfs, sgdisk
 
-function f_instalapaquete{
-sudo apt update - y && sudo apt install - y $paquete
-} 
-
 function f_existepaquete{
-if sudo which $lvm2 && sudo which $mkfs && sudo which $gdisk;
+if which lvm2 && which mkfs; then
 return 0
 else 
 return 1 
-f_instalapaquete
+apt update -y && apt install -y lvm2 mkfs
+fi
 }
 
 #4. Comprobar que discos se van a utilizar para el vg
@@ -76,6 +66,7 @@ j=1
       return 0
     else
       return 1
+      exit 1
     fi
   done
 }
@@ -86,7 +77,7 @@ j=1
 
 function f_crearvg {
   # Crear particiones en los discos (usando sfdisk)
-  for disco in $disco1 $disco2; do
+  for disco in $disco1 $disco2 $disco3 $disco4; do
     echo "Creando partición en $disco"
     echo "label: dos" | sudo sfdisk $disco >> /dev/null
     echo ",,8e," | sudo sfdisk $disco >> /dev/null
@@ -94,10 +85,10 @@ function f_crearvg {
   done
 
   # Crear el VG
-  sudo vgcreate vg01-script $disco1"1" $disco2"1" >> /dev/null
+  sudo vgcreate vg01 $disco1"1" $disco2"1" >> /dev/null
   echo "Creando el grupo de volumenes."
   # Mostrar información del VG
-  sudo vgdisplay vg01-script
+  sudo vgdisplay vg01
 }
 
 #6. crear LV
@@ -114,7 +105,7 @@ VG_FREE=$(vgdisplay -c $VG_NAME | cut -d ":" -f 16)
 function f_crearlv {
 if [ $LV_SIZE -lt $VG_FREE ]; then
   lvcreate -L $LV_SIZE -n lv20gb $VG_NAME
-	Return 0
+	return 0
 else
   echo "No hay suficiente espacio libre en el grupo de volumenes. Saliendo del script."
   return 1
