@@ -48,24 +48,17 @@ function f_conexion {
 #   Comprobar si no están los paquetes y en ese caso instalarlos.
 #   paquetes: lvm2, mkfs, sgdisk
 
-function f_existe_paquete {
-if sudo which $comando;then 
-echo "El comando $comando se encuentra en el sistema"
-return 0
-else
-echo "El comando $comando nonse encuentra en el sistema" 
-return 1
-fi
-}
-
-function f_buscapaquete{
-paquete=$(sudo dpkg $comando) 
-} 
-
 function f_instalapaquete{
 sudo apt update - y && sudo apt install - y $paquete
 } 
 
+function f_existepaquete{
+if sudo which $lvm2 && sudo which $mkfs && sudo which $gdisk;
+return 0
+else 
+return 1 
+f_instalapaquete
+}
 
 #4. Comprobar que discos se van a utilizar para el vg
 #   Buscar discos vacío (4 discos de 5GB) y guardarlos variables d1 d2 d3 d4.
@@ -118,15 +111,15 @@ function f_crearvg {
 VG_NAME=vg01-script
 LV_SIZE=20G
 VG_FREE=$(vgdisplay -c $VG_NAME | cut -d ":" -f 16)
-
+function f_crearlv {
 if [ $LV_SIZE -lt $VG_FREE ]; then
-  lvcreate -L $LV_SIZE -n mylv $VG_NAME
+  lvcreate -L $LV_SIZE -n lv20gb $VG_NAME
 	Return 0
 else
   echo "No hay suficiente espacio libre en el grupo de volumenes. Saliendo del script."
   return 1
 	exit 1
 fi
-
+}
 #7. asignar sistema de ficheros al LV
 #   ext4
