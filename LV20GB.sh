@@ -1,8 +1,21 @@
 #!/bin/bash
 #Descripción: Script para configurar un LVM de 20GB estrictamente con 4 discos
 #Autor:
-#Version: 0.1
+#Version: 1.0
 #Fecha de creación:
-#Paquetes necesarios:
+#Paquetes necesarios: lvm2, gdisk, mkfs
 
-### DURANTE DESARROLLO; HACED FICHEROS APARTE CON VUESTRAS FUNCIONES, NO ESCRIBAIS AQUÍ ###
+. funciones
+
+# root
+f_comprobarroot
+# internet
+f_conexion
+# paquetes
+f_existepaquete
+# deteccion discos
+f_comprobar_part
+# vg01
+f_crearvg
+#lv20gb
+f_crearlv
