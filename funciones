@@ -94,10 +94,10 @@ function f_crearvg {
   done
 
   # Crear el VG
-  sudo vgcreate vg01 $disco1"1" $disco2"1" >> /dev/null
+  sudo vgcreate vg01-script $disco1"1" $disco2"1" >> /dev/null
   echo "Creando el grupo de volumenes."
   # Mostrar información del VG
-  sudo vgdisplay vg01
+  sudo vgdisplay vg01-script
 }
 
 #6. crear LV
