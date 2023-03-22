@@ -23,17 +23,13 @@ f_comprobar_part
       if [ $? -eq 0 ]; then
 # vg01
 f_crearvg
-
-        if [ $? -eq 0 ]; then
 #lv20gb
 f_crearlv
-
-          if [ $? -eq 0 ]; then
+        if [ $? -eq 0 ]; then
 #mkfs
 f_asignarsisfichc
-            if [ $? -eq 0 ]; then
+          if [ $? -eq 0 ]; then
 echo "Operacion completada existosamente"
-            fi
           fi
         fi
       fi
