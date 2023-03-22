@@ -15,13 +15,14 @@ reset="\e[0m"
 #Autor: Mario Zayas García
 #Descripcion: Esta funcion comprobará si el usuario tiene permisos de root 
 
-function f_comprobarroot
+function f_comprobarroot {
 if [[ $USER != "root" ]]; then
    echo "Este script debe ser ejecutado como root" 
    exit 1
 else
    return 0
 fi
+}
 
 #2. Internet
 #   comprueba internet
@@ -69,7 +70,7 @@ j=1
       return 1
     fi
   done
-  if [disco4 = "0"]; then
+  if [ $disco4 = "0" ]; then
       echo "No hay suficientes discos (Se necesitan 4)"
       return 1
       exit 1
