@@ -5,7 +5,7 @@
 #Fecha de creación:
 #Paquetes necesarios: lvm2, gdisk, mkfs
 
-. funciones
+. ./funciones
 
 # root
 f_comprobarroot
