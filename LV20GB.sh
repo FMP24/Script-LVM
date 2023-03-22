@@ -31,6 +31,9 @@ f_crearlv
           if [ $? -eq 0 ]; then
 #mkfs
 f_asignarsisfichc
+            if [ $? -eq 0 ]; then
+echo "Operacion completada existosamente"
+            fi
           fi
         fi
       fi
