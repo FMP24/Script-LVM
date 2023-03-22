@@ -43,8 +43,8 @@ function f_existepaquete{
 if which lvm2 && which mkfs; then
 return 0
 else 
-return 1 
-apt update -y && apt install -y lvm2 mkfs
+apt update -y && apt install -y lvm2 util-linux
+return 1
 fi
 }
 
@@ -87,7 +87,7 @@ function f_crearvg {
     partprobe $disco >> /dev/null
   done
   # Crear el VG
-  vgcreate vg01 $disco1"1" $disco2"1" $disco3"1" $disco4"1" >> /dev/null
+  vgcreate vg01-script $disco1"1" $disco2"1" $disco3"1" $disco4"1" >> /dev/null
   echo "Creando el grupo de volumenes."
 }
 
@@ -115,3 +115,8 @@ fi
 
 #7. asignar sistema de ficheros al LV
 #   ext4
+
+function f_asignarsisfichc {
+    mkfs.ext4 /dev/vg01-script/lv20gb
+    echo "Se va a asignar el sistemas de ficheros en el volumen lógico creado."
+}
