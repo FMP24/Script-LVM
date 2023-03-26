@@ -57,41 +57,38 @@ fi
 #   Salir del programa en caso de no tener 4 discos como se especifica.
 
 function f_comprobar_part {
-disco4="0"
-j=1
-  for i in $(lsblk -n -d -o NAME); do
-    if [ "$(lsblk -o NAME,TYPE | awk '$2=="part"{print $1}' | egrep -o "$i")" = "" ]; then
-      #Variable Dinámica Incremental disco1, 2, 3, 4...
-      #Se les asignan los dispositivos vacios detectados con la condición del if
-      eval disco$j="\/dev\/$i"
-      j=$((j+1)) 
-      return 0
-    else
-      return 1
-    fi
-  done
-  if [ $disco4 = "0" ]; then
-      echo "No hay suficientes discos (Se necesitan 4)"
-      return 1
-      exit 1
-  fi
+disco=()
+ # Bucle con todos los discos
+for i in $(lsblk -n -d -o NAME)
+do
+ # Detecta discos vacios
+lsblk -o NAME,TYPE | awk '$2=="part"{print $1}' | egrep -o "$i" >> /dev/null
+if [ $? -eq 1 ]; then
+disco+=(\/dev\/$i)
+fi
+done
 }
 
 #5. crear vg
-#   crear vg de nombre "vg01-script"
-#   añadir los discos seleccionados al grupo vg01 
+#   crear vg de nombre vg01-script
+#   añadir los discos seleccionados al grupo vg01
 
 function f_crearvg {
-  # Crear particiones en los discos (usando sfdisk)
-  for disco in $disco1 $disco2 $disco3 $disco4; do
-    echo "Creando partición en $disco"
-    echo "label: dos" | sudo sfdisk $disco >> /dev/null
-    echo ",,8e," | sudo sfdisk $disco >> /dev/null
-    partprobe $disco >> /dev/null
-  done
-  # Crear el VG
-  vgcreate vg01-script $disco1"1" $disco2"1" $disco3"1" $disco4"1" >> /dev/null
-  echo "Creando el grupo de volumenes."
+ # Crear particiones en los discos (usando sfdisk)
+echo "${disco[0]}"
+echo "${disco[1]}"
+echo "${disco[2]}"
+echo "${disco[3]}"
+
+for disco in "${disco[@]}"; do
+echo "Creando partición en: $disco"
+echo "label: ext4" | sudo sfdisk $disco >> /dev/null
+echo ",,8e," | sudo sfdisk $disco >> /dev/null
+partprobe $disco >> /dev/null
+done
+ # Crear el VG
+vgcreate vg01-script "${disco[0]}1" "${disco[1]}1" "${disco[2]}1" "${disco[3]}1" >> /dev/null
+echo "Creando el grupo de volumenes."
 }
 
 #6. crear LV
