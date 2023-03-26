@@ -87,7 +87,7 @@ echo ",,8e," | sudo sfdisk $disco >> /dev/null
 partprobe $disco >> /dev/null
 done
  # Crear el VG
-vgcreate vg01-script "${disco[0]}1" "${disco[1]}1" "${disco[2]}1" "${disco[3]}1" >> /dev/null
+vgcreate -y vg01-script "${disco[0]}1" "${disco[1]}1" "${disco[2]}1" "${disco[3]}1" >> /dev/null
 echo "Creando el grupo de volumenes."
 }
 
